@@ -6,7 +6,7 @@
 # It also creates and activates a Python virtual environment and installs required Python packages.
 
 # Ensure the script exits on any error
-# set -e
+set -e
 
 # Install Homebrew if not already installed
 if ! command -v brew &> /dev/null
@@ -27,7 +27,7 @@ brew install databricks
 # Configure the Databricks CLI with your workspace URL and token if DEFAULT profile is not set
 if ! databricks auth profiles | tail -n +2 | grep -q "^DEFAULT[[:space:]]"; then
     echo "Configuring Databricks CLI for DEFAULT profile..."
-    # You will be prompted to enter these details
+    # You will be prompted to enter the databricks host URL and token
     databricks configure --profile DEFAULT
 else
     echo "Databricks CLI DEFAULT profile is already configured."
@@ -50,7 +50,14 @@ tfenv use 1.13.0
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
-# Create and activate the virtual environment and install dependencies
-pyenv virtualenv 3.13.7 demo-data-product-at-scale
+# Create virtual environment if it doesn't exist
+if ! pyenv versions | grep -q demo-data-product-at-scale; then
+    echo "Creating virtual environment demo-data-product-at-scale..."
+    pyenv virtualenv 3.13.7 demo-data-product-at-scale
+else
+    echo "Virtual environment demo-data-product-at-scale already exists."
+fi
+
+# Activate the virtual environment and install dependencies
 pyenv activate demo-data-product-at-scale
 pip install -r ./scripts/requirements.txt
