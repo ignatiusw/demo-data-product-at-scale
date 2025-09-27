@@ -30,11 +30,13 @@ resource "databricks_group" "data_product_groups" {
   display_name          = each.value
   workspace_access      = true
   databricks_sql_access = true
+  force                 = true  # Ignore errors if group already exists
 }
 
 # Create Service Principal
 resource "databricks_service_principal" "data_product_sp" {
   display_name = local.service_principal_name
+  force        = true  # Ignore errors if service principal already exists
 }
 
 # Create standard schemas in the catalog
@@ -44,6 +46,7 @@ resource "databricks_schema" "standard_schemas" {
   catalog_name = local.catalog_name
   name         = each.value
   comment      = "Standard ${each.value} schema for ${var.data_product_name}"
+  force_destroy = true  # Allow Terraform to destroy schema even if not empty
   
   properties = {
     for tag_key, tag_value in var.data_product_tags : tag_key => tag_value
@@ -66,11 +69,19 @@ resource "databricks_volume" "standard_volumes" {
     #databricks_catalog.data_product_catalog, # remove the comment if using paid edition
     databricks_schema.standard_schemas["raw"]
   ]
+  
+  lifecycle {
+    ignore_changes = [volume_type]  # Ignore changes to volume type after creation
+  }
 }
 
 # Create workspace directory for the data product (optional)
 resource "databricks_directory" "data_product_directory" {
   path = local.folder_name
+  
+  lifecycle {
+    ignore_changes = [path]  # Ignore changes to path after creation
+  }
 }
 
 ### 2. Create Users ###
@@ -79,18 +90,18 @@ resource "databricks_directory" "data_product_directory" {
 resource "databricks_user" "read_only_users" {
   for_each = toset(var.data_product_users["read-only"])
 
-  user_name    = "${replace(each.value, "/[^a-zA-Z0-9]/", ".")}${var.email_domain}"
+  user_name    = lower("${replace(each.value, "/[^a-zA-Z0-9]/", ".")}${var.email_domain}")
   display_name = each.value
-  force        = true
+  force        = true # Ignore errors if user already exists
 }
 
 # Create users for modify group  
 resource "databricks_user" "modify_users" {
   for_each = toset(var.data_product_users["modify"])
   
-  user_name    = "${replace(each.value, "/[^a-zA-Z0-9]/", ".")}${var.email_domain}"
+  user_name    = lower("${replace(each.value, "/[^a-zA-Z0-9]/", ".")}${var.email_domain}")
   display_name = each.value
-  force        = true
+  force        = true # Ignore errors if user already exists
 }
 
 ### 3. Assign Privileges ###
@@ -150,6 +161,14 @@ resource "databricks_grants" "catalog_permissions" {
     databricks_user.modify_users,
     databricks_service_principal.data_product_sp
   ]
+
+  lifecycle {
+    replace_triggered_by = [
+      databricks_user.read_only_users,
+      databricks_user.modify_users,
+      databricks_service_principal.data_product_sp
+    ]
+  }
 }
 
 # Grant directory permissions to groups
