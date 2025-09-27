@@ -54,15 +54,3 @@ eval "$(pyenv virtualenv-init -)"
 pyenv virtualenv 3.13.7 demo-data-product-at-scale
 pyenv activate demo-data-product-at-scale
 pip install -r ./scripts/requirements.txt
-
-# Print instructions to activate the environment in future shell sessions, uncomment if needed
-# echo ""
-# echo "==================================================================="
-# echo "IMPORTANT: To activate the Python environment in your current shell,"
-# echo "please run one of the following commands:"
-# echo ""
-# echo "  eval \"\$(pyenv init -)\" && eval \"\$(pyenv virtualenv-init -)\" && pyenv activate demo-data-product-at-scale"
-# echo ""
-# echo "OR for future runs, source this script instead:"
-# echo "  source ./scripts/init.sh"
-# echo "==================================================================="
