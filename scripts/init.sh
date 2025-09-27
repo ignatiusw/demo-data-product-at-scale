@@ -1,6 +1,32 @@
 #!/bin/bash
 
+# This script sets up the environment for the demo-data-product-at-scale project.
+# It installs necessary tools and dependencies including Homebrew, Databricks CLI,
+# pyenv, Python 3.13.7, GNU Make, tfenv, and Terraform 1.13.0.
+# It also creates and activates a Python virtual environment and installs required Python packages.
+
+# Ensure the script exits on any error
+set -e
+
+# Install Homebrew if not already installed
+if ! command -v brew &> /dev/null
+then
+    echo "Homebrew not found. Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+    echo "Homebrew is already installed."
+fi
+
+# Update Homebrew to ensure we have the latest package definitions
 brew update
+
+# Tap the Databricks Homebrew repository and install the Databricks CLI
+brew tap databricks/tap
+brew install databricks
+
+# Configure the Databricks CLI with your workspace URL and token
+# You will be prompted to enter these details
+databricks configure --profile DEFAULT
 
 # Install pyenv and Python 3.13.7
 brew install pyenv

@@ -1,13 +1,16 @@
-# Main Terraform configuration
-# This file contains the root module configuration
-
-terraform {
-  required_version = "~> 1.13.0"
+module "data_product_setup" {
+  source = "./modules/data_product_setup"
   
-  required_providers {
-    databricks = {
-      source  = "databricks/databricks"
-      version = "~> 1.88"  # Latest stable version as of 1 September 2025
-    }
+  providers = {
+      databricks         = databricks
+      databricks.account = databricks.account
   }
+
+  environment              = var.environment
+
+  data_product_name        = var.data_product_name
+  data_product_description = var.data_product_description
+  data_product_tags        = var.data_product_tags
+  
+  data_product_users       = var.data_product_users
 }

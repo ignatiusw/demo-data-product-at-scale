@@ -14,5 +14,15 @@ users:
   modify:
     - General Hux
 compute:
-  - <compute specs #1>
-  - <compute specs #2>
+  - type: sql
+    name: Starkiller Base SQL Cluster
+    cluster_size: 4X-Large
+  - type: classic
+    name: Starkiller Base Super Large Compute
+    node_type:
+      min_cores: 64
+      min_memory_gb: 256
+      local_disk: true
+    autoscale:
+      min_workers: 2
+      max_workers: 10
