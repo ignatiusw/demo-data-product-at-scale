@@ -41,3 +41,6 @@ terraform.rc
 
 # Ignore tfplan files
 *.tfplan
+
+# Ignore terraform output files created specific for this project
+src/terraform/output/
