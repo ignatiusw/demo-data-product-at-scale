@@ -1,0 +1,22 @@
+# Environment configuration
+environment = "{{ environment }}"
+
+# Data product configuration
+data_product_name        = "{{ data_product_name }}"
+data_product_description = "{{ data_product_description }}"
+data_product_tags        = {
+    {%- for key, value in data_product_tags.items() %}
+    {{ key | tojson }} = {{ value | tojson }}
+    {%- endfor %}
+}
+
+# Users to be added to the data product
+data_product_users = {
+  "read-only" = {{ read_only_members | tojson }}
+  "modify"    = {{ modify_members | tojson }}
+}
+
+# Clusters configuration, not implemented yet due to Databricks Free Edition limitations
+
+# Fake email domain variables for user creation
+email_domain = "@{{ data_product_name_standardised }}.demo-data-product-at-scale.com"

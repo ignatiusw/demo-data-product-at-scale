@@ -1,0 +1,19 @@
+name: Death Star
+description: A deathly sphere
+classification: Confidential
+owner:
+  division: Galactic Empire
+  business unit: Secret Weapon
+  contacts:
+    - Sheev Palpatine
+    - Darth Vader
+users:
+  read-only:
+    - Leia Organa
+    - Cassian Andor
+  modify:
+    - Orson Krennic
+compute:
+  - type: sql
+    name: Death Star SQL Cluster
+    cluster_size: X-Large

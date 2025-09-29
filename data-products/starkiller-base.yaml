@@ -1,0 +1,28 @@
+name: Starkiller Base
+description: A planet-destroying superweapon
+classification: Highly Confidential
+owner:
+  division: First Order
+  business unit: Superweapon Division
+  contacts:
+    - Supreme Leader Snoke
+    - Kylo Ren
+users:
+  read-only:
+    - Poe Dameron
+    - Finn
+  modify:
+    - General Hux
+compute:
+  - type: sql
+    name: Starkiller Base SQL Cluster
+    cluster_size: 4X-Large
+  - type: classic
+    name: Starkiller Base Super Large Compute
+    node_type:
+      min_cores: 64
+      min_memory_gb: 256
+      local_disk: true
+    autoscale:
+      min_workers: 2
+      max_workers: 10
