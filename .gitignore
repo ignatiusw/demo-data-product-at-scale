@@ -44,7 +44,7 @@ terraform.rc
 *.tfplan
 
 # Ignore terraform output files created specific for this project
-src/terraform/output/
+src/terraform/output*/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
