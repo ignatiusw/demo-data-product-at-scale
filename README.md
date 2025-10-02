@@ -119,7 +119,7 @@ The generated terraform files will be created in `src/terraform/output/`.
 in the same folder as the terraform outputs. This means every time you run
 this, it will remove the output folder along with the terraform state file.
 If you want to keep the terraform state file, please make a back up copy of
-them first before running the CI script, or use another location to store
+it first before running the CI script, or use another location to store
 the terraform file (you'll need to update the backend and/or the config).
 
 ```bash
@@ -134,7 +134,7 @@ This will deploy the saved plan(s) stored in `src/terraform/output/`.
 ⚠️ **Important Note:** As per the above note, the terraform state file is stored
 locally in the above folder, which will be deleted if you re-run the CI script.
 If you want to keep the terraform state file, please make a back up copy of
-them first before running the CI script, or use another location to store
+it first before running the CI script, or use another location to store
 the terraform file (you'll need to update the backend and/or the config).
 
 ```bash
