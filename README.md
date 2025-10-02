@@ -25,6 +25,10 @@ This project demonstrates how to:
         └── Classification      └── Multi-Environment   └── Permissions
 ```
 
+Each Data Product has similar components, just different contents.
+
+<img src="./resources/images/data-product-patterns.png" alt="Data Product Patterns" width="800">
+
 ## 📁 Project Structure
 
 ```
@@ -56,6 +60,10 @@ demo-data-product-at-scale/
 ```
 
 ## 🚀 Quick Start
+
+The steps below will create terraform resources for each data product and deploy them accordingly.
+
+<img src="./resources/images/ci-cd-steps.png" alt="CI CD Steps" width="800">
 
 ### Prerequisites
 
