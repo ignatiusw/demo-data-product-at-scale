@@ -113,11 +113,33 @@ compute:
 
 ### 4. Run the CI script
 
-The generated terraform files will be created in `src/terraform/output/`:
+The generated terraform files will be created in `src/terraform/output/`.
+
+⚠️ **Important Note:** This repo currently stores the terraform state file locally
+in the same folder as the terraform outputs. This means every time you run
+this, it will remove the output folder along with the terraform state file.
+If you want to keep the terraform state file, please make a back up copy of
+them first before running the CI script, or use another location to store
+the terraform file (you'll need to update the backend and/or the config).
 
 ```bash
 # Run the CI script by passing the environment (dev, test or prod)
 source ./scripts/ci.sh dev
+```
+
+### 5. Run the CD script
+
+This will deploy the saved plan(s) stored in `src/terraform/output/`.
+
+⚠️ **Important Note:** As per the above note, the terraform state file is stored
+locally in the above folder, which will be deleted if you re-run the CI script.
+If you want to keep the terraform state file, please make a back up copy of
+them first before running the CI script, or use another location to store
+the terraform file (you'll need to update the backend and/or the config).
+
+```bash
+# Run the CI script by passing the environment (dev, test or prod)
+source ./scripts/cd.sh
 ```
 
 ## 📝 Data Product Configuration
