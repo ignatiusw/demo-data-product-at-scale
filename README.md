@@ -138,7 +138,7 @@ them first before running the CI script, or use another location to store
 the terraform file (you'll need to update the backend and/or the config).
 
 ```bash
-# Run the CI script by passing the environment (dev, test or prod)
+# Run the CD script
 source ./scripts/cd.sh
 ```
 
