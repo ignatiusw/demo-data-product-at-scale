@@ -67,7 +67,10 @@ The steps below will create terraform resources for each data product and deploy
 
 ### Prerequisites
 
-- **Databricks Workspace**: Access to a Databricks workspace (Free or Paid edition)
+- **Databricks Workspace**: Access to a Databricks workspace (Free or Paid edition)<br/>
+  ⚠️ **Important Note:** If you are using the Free edition, catalog (database) cannot be created via
+  Terraform, you will need to create the catalog first based on the data product name with all lower
+  case, and non-alphanumeric characters (`[A-Za-z0-9]`) replaced with underscore (`_`)
 - **Python 3.13.7**: With pyenv for environment management
 - **Terraform 1.13.0**: For infrastructure provisioning  
 - **Git**: For version control
