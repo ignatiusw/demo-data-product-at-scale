@@ -13,6 +13,18 @@ variable "environment" {
   }
 }
 
+# Databricks host and token for SQL execution
+variable "databricks_host" {
+  description = "Databricks workspace host URL"
+  type        = string
+}
+
+variable "databricks_token" {
+  description = "Databricks personal access token"
+  type        = string
+  sensitive   = true
+}
+
 # Data product variables
 variable "data_product_name" {
   description = "Name of the data product"
