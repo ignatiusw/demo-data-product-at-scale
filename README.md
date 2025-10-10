@@ -43,18 +43,19 @@ demo-data-product-at-scale/
 │       ├── modules/
 │       │   └── data_product_setup/        # 🏗️ Reusable Terraform module
 │       │       ├── main.tf                #    Resource definitions
+│       │       ├── data.tf                #    Data sources for existing resources, also to execute SQL statement against Databricks
 │       │       ├── variables.tf           #    Input variables
 │       │       ├── outputs.tf             #    Output values
 │       │       ├── locals.tf              #    Local values and naming
-│       │       └── README.md              #    Module documentation
+│       │       └── providers.tf           #    Module provider configurations
 │       └── template/                      # 📋 Jinja2 templates
 │           ├── main.tf                    #    Main Terraform configuration
 │           ├── variables.tf               #    Variable definitions
 │           ├── providers.tf               #    Provider configurations
 │           ├── backend.tf                 #    Backend configuration
 │           ├── versions.tf                #    Version constraints
-│           ├── data-product.tfvars.jinja  #    Environment-specific variables
-│           └── backend.config.jinja       #    Backend configuration
+│           ├── data-product.tfvars.jinja  #    Data Product specific variables
+│           └── backend.config.jinja       #    Data Product specific backend configuration
 └── tests/                                 # 🧪 Automated validation
     └── test_data_product_uniqueness.py    #    Name uniqueness validation
 ```
@@ -209,7 +210,7 @@ The core Terraform module that provisions Databricks resources for each data pro
 - **🗂️ Directory Structure**: Organized workspace folders
 - **👥 User Groups**: Separate read-only and modify groups
 - **🔐 Permissions**: Granular catalog and schema permissions
-- **🏷️ Service Principals**: For automated workflows (optional)
+- **🏷️ Service Principals**: For automated workflows
 
 ### Module Usage
 
@@ -217,27 +218,29 @@ The core Terraform module that provisions Databricks resources for each data pro
 module "data_product" {
   source = "./modules/data_product_setup"
   
-  # Core Configuration
-  product_name        = "customer-analytics-hub"
-  product_description = "Customer data and analytics platform"
-  environment         = "dev"
-  
-  # Owner Information  
-  division      = "Data & Analytics"
-  business_unit = "Customer Intelligence"
-  contacts      = ["data-lead@company.com"]
-  
-  # User Management
-  read_only_users = ["analyst@company.com"]
-  modify_users    = ["engineer@company.com"]
-  
-  # Optional Features
-  create_service_principal = true
-  
-  tags = {
-    Environment = "development"
-    Owner       = "data-team"
+  providers = {
+      databricks         = databricks
+      databricks.account = databricks.account
   }
+
+  environment = "dev"
+
+  data_product_name        = "demo-data-product"
+  data_product_description = "A demo data product for showcasing data product at scale"
+  data_product_tags        = {
+    "classification" = "Internal"
+    "division"       = "Data & Analytics"
+    "business unit"  = "Data Platforms & Engineering"
+    "contacts"      = "[\"data-team@demo-data-product-at-scale.com\", \"ignatius.soputro@demo-data-product-at-scale.com\"]"
+  }
+  
+  data_product_users = {
+    "read-only" = ["Alice in Wonderland", "Bob the Builder"]
+    "modify"    = ["Charlie Brown", "Dora the Explorer", "Ethan Hunt"]
+  }
+
+  # Optional
+  email_domain = "demo"
 }
 ```
 

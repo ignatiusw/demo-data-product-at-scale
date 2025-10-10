@@ -15,12 +15,6 @@
 #   }
 # }
 
-# Comment out the above resource and use the data source below to reference an existing catalog
-# NOTE: This is a workaround due to Databricks Free Edition limitations, remove if using a paid edition
-data "databricks_catalog" "data_product_catalog" {
-    name = local.catalog_name
-}
-
 # Create Databricks Groups
 # NOTE: In Free Edition, groups can only be created at workspace level, not at Unity Catalog level
 # Therefore, these groups cannot be added to the catalog privileges directly

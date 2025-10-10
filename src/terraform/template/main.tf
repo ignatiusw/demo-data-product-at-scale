@@ -6,7 +6,10 @@ module "data_product_setup" {
       databricks.account = databricks.account
   }
 
-  environment              = var.environment
+  environment = var.environment
+
+  databricks_host  = var.databricks_host
+  databricks_token = var.databricks_token
 
   data_product_name        = var.data_product_name
   data_product_description = var.data_product_description

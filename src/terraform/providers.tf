@@ -13,3 +13,8 @@ provider "databricks" {
   host =  "https://accounts.cloud.databricks.com"
   # For account-level operations, use DATABRICKS_ACCOUNT_ID environment variable
 }
+
+# HTTP provider for making HTTP requests
+provider "http" {
+  # No configuration required for basic usage
+}
