@@ -38,7 +38,7 @@ locals {
   budget_policy_tags = [
     for key in ["division", "business unit"] : {
       "key"   = key
-      "value" = var.data_product_tags[key]
+      "value" = lookup(var.data_product_tags, key, null)
     }
     if contains(keys(var.data_product_tags), key)
   ]
