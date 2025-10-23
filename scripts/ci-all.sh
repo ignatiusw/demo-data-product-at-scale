@@ -40,7 +40,7 @@ python src/python/data-product.py "$ENVIRONMENT" "data-products/" --debug
 # For each modified file, pass it to the python script data-product.py to render the terraform output
 if [ -n "$ALL_FILES" ]; then
     echo "$ALL_FILES" | while read -r FILE; do
-        if [ -n "$FILE" ]; then
+        if [ -n "$FILE" ] && [[ "$FILE" =~ \.(yaml|yml)$ ]]; then
             echo "Initialise terraform for: $FILE"
             
             # Get the basename without extension (handles both .yaml and .yml)
