@@ -3,11 +3,11 @@
 
 terraform {
   required_version = "~> 1.13.0"
-  
+
   required_providers {
     databricks = {
       source  = "databricks/databricks"
-      version = "~> 1.88"  # Latest stable version as of 1 September 2025
+      version = "~> 1.88" # Latest stable version as of 1 September 2025
     }
     http = {
       source  = "hashicorp/http"

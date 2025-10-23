@@ -34,6 +34,15 @@ locals {
   # Format tags for Databricks SQL: ('tag1' = 'value1', 'tag2' = 'value2')
   formatted_tags = length(var.data_product_tags) > 0 ? "(${join(", ", [for k, v in var.data_product_tags : "'${replace(k, "'", "''")}' = '${replace(v, "'", "''")}'"])})" : ""
 
+  # Filter and format tags for budget policy custom_tags: [{"division" = "abc"}, {"business unit" = "def"}]
+  budget_policy_tags = [
+    for key in ["division", "business unit"] : {
+      "key"   = key
+      "value" = lookup(var.data_product_tags, key, null)
+    }
+    if contains(keys(var.data_product_tags), key)
+  ]
+
   # Standard SQL Statements
   sql_statements = concat(
     [

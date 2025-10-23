@@ -6,11 +6,11 @@ provider "databricks" {
 }
 
 provider "databricks" {
-  alias      = "account"
+  alias = "account"
 
   # Use the right Databricks account host based on your Databricks environment
   # Refer to https://registry.terraform.io/providers/databricks/databricks/latest/docs#host-argument
-  host =  "https://accounts.cloud.databricks.com"
+  host = "https://accounts.cloud.databricks.com"
   # For account-level operations, use DATABRICKS_ACCOUNT_ID environment variable
 }
 
