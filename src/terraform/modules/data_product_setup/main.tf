@@ -229,6 +229,5 @@ resource "databricks_group_member" "sp_membership" {
 #   provider = databricks.account
 # 
 #   policy_name = "${var.data_product_name} Budget Policy"
-#   binding_workspace_ids = [3872919537045031]
 #   custom_tags = local.budget_policy_tags
 # }
