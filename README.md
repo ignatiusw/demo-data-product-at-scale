@@ -140,7 +140,7 @@ If you just need to run only those data products that change, use the below:
 source ./scripts/ci.sh dev
 ```
 
-If you need to run all the data product, use the below:
+If you need to run all data products, use the below:
 ```bash
 # Run the CI script by passing the environment (dev, test or prod)
 source ./scripts/ci-all.sh dev
