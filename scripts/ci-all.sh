@@ -42,7 +42,11 @@ if [ -n "$ALL_FILES" ]; then
     echo "$ALL_FILES" | while read -r FILE; do
         if [ -n "$FILE" ]; then
             echo "Initialise terraform for: $FILE"
-            TERRAFORM_DIR="$TERRAFORM_BASE_DIR/$(basename "$FILE" .yaml)"
+            
+            # Get the basename without extension (handles both .yaml and .yml)
+            BASENAME=$(basename "$FILE")
+            BASENAME="${BASENAME%.*}"
+            TERRAFORM_DIR="$TERRAFORM_BASE_DIR/$BASENAME"
             
             echo "Initialising Terraform in directory: $TERRAFORM_DIR"
             terraform -chdir="$TERRAFORM_DIR" init -backend-config="backend.config"
