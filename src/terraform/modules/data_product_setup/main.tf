@@ -20,33 +20,33 @@
 # Therefore, these groups cannot be added to the catalog privileges directly
 resource "databricks_group" "data_product_groups" {
   for_each = local.group_names
-  
+
   display_name          = each.value
   workspace_access      = true
   databricks_sql_access = true
-  force                 = true  # Ignore errors if group already exists
+  force                 = true # Ignore errors if group already exists
 }
 
 # Create Service Principal
 resource "databricks_service_principal" "data_product_sp" {
   display_name = local.service_principal_name
-  force        = true  # Ignore errors if service principal already exists
+  force        = true # Ignore errors if service principal already exists
 }
 
 # Create standard schemas in the catalog
 resource "databricks_schema" "standard_schemas" {
   for_each = toset(var.standard_schemas)
-  
-  catalog_name = local.catalog_name
-  name         = each.value
-  comment      = "Standard ${each.value} schema for ${var.data_product_name}"
-  force_destroy = true  # Allow Terraform to destroy schema even if not empty
-  
+
+  catalog_name  = local.catalog_name
+  name          = each.value
+  comment       = "Standard ${each.value} schema for ${var.data_product_name}"
+  force_destroy = true # Allow Terraform to destroy schema even if not empty
+
   properties = {
     for tag_key, tag_value in var.data_product_tags : tag_key => tag_value
   }
-  
-  # depends_on = [databricks_catalog.data_product_catalog] # remove the comment if using paid edition
+
+  depends_on = [data.databricks_catalog.data_product_catalog] # remove data if using paid edition
 }
 
 # Create standard volumes in the raw schema of the catalog
@@ -58,23 +58,23 @@ resource "databricks_volume" "standard_volumes" {
   name         = each.value
   comment      = "Standard ${each.value} volume for ${var.data_product_name}"
   volume_type  = "MANAGED" # Or use EXTERNAL if there is no limitation on the Free Edition
-  
+
   depends_on = [
-    #databricks_catalog.data_product_catalog, # remove the comment if using paid edition
+    data.databricks_catalog.data_product_catalog, # remove data if using paid edition
     databricks_schema.standard_schemas["raw"]
   ]
-  
+
   lifecycle {
-    ignore_changes = [volume_type]  # Ignore changes to volume type after creation
+    ignore_changes = [volume_type] # Ignore changes to volume type after creation
   }
 }
 
 # Create workspace directory for the data product (optional)
 resource "databricks_directory" "data_product_directory" {
   path = local.folder_name
-  
+
   lifecycle {
-    ignore_changes = [path]  # Ignore changes to path after creation
+    ignore_changes = [path] # Ignore changes to path after creation
   }
 }
 
@@ -92,7 +92,7 @@ resource "databricks_user" "read_only_users" {
 # Create users for modify group  
 resource "databricks_user" "modify_users" {
   for_each = toset(var.data_product_users["modify"])
-  
+
   user_name    = lower("${replace(each.value, "/[^a-zA-Z0-9]/", ".")}${var.email_domain}")
   display_name = each.value
   force        = true # Ignore errors if user already exists
@@ -125,7 +125,7 @@ resource "databricks_user" "modify_users" {
 # NOTE: All catalog permissions must be managed in a single databricks_grants resource to avoid conflicts
 resource "databricks_grants" "catalog_permissions" {
   catalog = local.catalog_name
-  
+
   # Grant read-only permissions to read-only users
   dynamic "grant" {
     for_each = toset(var.data_product_users["read-only"])
@@ -134,7 +134,7 @@ resource "databricks_grants" "catalog_permissions" {
       privileges = local.catalog_privileges["read-only"]
     }
   }
-  
+
   # Grant modify permissions to modify users
   dynamic "grant" {
     for_each = toset(var.data_product_users["modify"])
@@ -143,13 +143,13 @@ resource "databricks_grants" "catalog_permissions" {
       privileges = local.catalog_privileges["modify"]
     }
   }
-  
+
   # Grant modify permissions to service principal
   grant {
     principal  = databricks_service_principal.data_product_sp.application_id
     privileges = local.catalog_privileges["modify"]
   }
-  
+
   depends_on = [
     databricks_user.read_only_users,
     databricks_user.modify_users,
@@ -168,7 +168,7 @@ resource "databricks_grants" "catalog_permissions" {
 # Grant directory permissions to groups
 resource "databricks_permissions" "directory_permissions" {
   directory_path = databricks_directory.data_product_directory.path
-  
+
   dynamic "access_control" {
     for_each = local.folder_privileges
     content {
@@ -176,7 +176,7 @@ resource "databricks_permissions" "directory_permissions" {
       permission_level = access_control.value
     }
   }
-  
+
   depends_on = [
     databricks_group.data_product_groups,
     databricks_directory.data_product_directory
@@ -188,10 +188,10 @@ resource "databricks_permissions" "directory_permissions" {
 # Add read-only users to read-only group
 resource "databricks_group_member" "read_only_user_membership" {
   for_each = toset(var.data_product_users["read-only"])
-  
+
   group_id  = databricks_group.data_product_groups["read-only"].id
   member_id = databricks_user.read_only_users[each.value].id
-  
+
   depends_on = [
     databricks_group.data_product_groups["read-only"],
     databricks_user.read_only_users
@@ -201,10 +201,10 @@ resource "databricks_group_member" "read_only_user_membership" {
 # Add modify users to modify group
 resource "databricks_group_member" "modify_user_membership" {
   for_each = toset(var.data_product_users["modify"])
-  
+
   group_id  = databricks_group.data_product_groups["modify"].id
   member_id = databricks_user.modify_users[each.value].id
-  
+
   depends_on = [
     databricks_group.data_product_groups["modify"],
     databricks_user.modify_users
@@ -215,9 +215,20 @@ resource "databricks_group_member" "modify_user_membership" {
 resource "databricks_group_member" "sp_membership" {
   group_id  = databricks_group.data_product_groups["modify"].id
   member_id = databricks_service_principal.data_product_sp.id
-  
+
   depends_on = [
     databricks_group.data_product_groups["modify"],
     databricks_service_principal.data_product_sp
   ]
 }
+
+### 5. Create Budget Policy for Serverless ###
+
+# Add serverless budget policies, uncomment for paid edition 
+# resource "databricks_budget_policy" "budget_policy" {
+#   provider = databricks.account
+# 
+#   policy_name = "${var.data_product_name} Budget Policy"
+#   binding_workspace_ids = [3872919537045031]
+#   custom_tags = local.budget_policy_tags
+# }

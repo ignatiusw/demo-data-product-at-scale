@@ -204,13 +204,19 @@ output "service_principal_principal_name" {
   value       = databricks_service_principal.data_product_sp.application_id
 }
 
+# Workspace outputs
+#output "workspace_ids" {
+#  description = "The IDs of the Databricks workspaces in the account"
+#  value       = data.databricks_mws_workspaces.all.ids
+#}
+
 # Summary output for debugging/monitoring
 output "data_product_setup_summary" {
   description = "Summary of all created resources"
   value = {
     catalog = {
       name         = local.catalog_name
-      id           = data.databricks_catalog.data_product_catalog.id # remove data and catalog_info, if using paid edition
+      id           = data.databricks_catalog.data_product_catalog.id                           # remove data and catalog_info, if using paid edition
       metastore_id = data.databricks_catalog.data_product_catalog.catalog_info[0].metastore_id # remove data and catalog_info[0], if using paid edition
     }
     groups = {
@@ -263,5 +269,8 @@ output "data_product_setup_summary" {
       service_principal_in_modify = true
       permissions_granted         = true
     }
+    #budget_policy = {
+    #  id = databricks_budget_policy.budget_policy.policy_id
+    #} # Uncomment if budget policy is created in paid edition
   }
 }

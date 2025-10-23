@@ -134,9 +134,16 @@ If you want to keep the terraform state file, please make a back up copy of
 it first before running the CI script, or use another location to store
 the terraform file (you'll need to update the backend and/or the config).
 
+If you just need to run only those data product that changes, use the below:
 ```bash
 # Run the CI script by passing the environment (dev, test or prod)
 source ./scripts/ci.sh dev
+```
+
+If you need to run all the data product, use the below:
+```bash
+# Run the CI script by passing the environment (dev, test or prod)
+source ./scripts/ci-all.sh dev
 ```
 
 ### 5. Run the CD script

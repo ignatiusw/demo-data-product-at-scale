@@ -6,7 +6,7 @@ variable "environment" {
   description = "Environment name (dev, test, prod)"
   type        = string
   default     = "dev"
-  
+
   validation {
     condition     = contains(["dev", "test", "prod"], var.environment)
     error_message = "Environment must be one of: dev, test, prod."
@@ -49,7 +49,7 @@ variable "data_product_users" {
   type        = map(list(string))
   default = {
     "read-only" = []
-    "modify" = []
+    "modify"    = []
   }
 }
 
