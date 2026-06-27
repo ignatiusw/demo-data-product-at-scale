@@ -56,3 +56,5 @@ if [ -n "$MODIFIED_FILES" ]; then
 fi
 
 echo "All CI tasks completed successfully!"
+
+set +e

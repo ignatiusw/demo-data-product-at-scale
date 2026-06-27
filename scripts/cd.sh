@@ -24,3 +24,5 @@ for dir in "$TERRAFORM_BASE_DIR"/*/; do
 done
 
 echo "All CD tasks completed successfully!"
+
+set +e

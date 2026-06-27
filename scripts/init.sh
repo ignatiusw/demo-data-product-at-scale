@@ -22,6 +22,7 @@ brew update
 
 # Tap the Databricks Homebrew repository and install the Databricks CLI
 brew tap databricks/tap
+brew trust databricks/tap
 brew install databricks
 
 # Configure the Databricks CLI with your workspace URL and token if DEFAULT profile is not set
@@ -60,4 +61,6 @@ fi
 
 # Activate the virtual environment and install dependencies
 pyenv activate demo-data-product-at-scale
-pip install -r ./scripts/requirements.txt
+pip install --no-input -r ./scripts/requirements.txt
+
+set +e

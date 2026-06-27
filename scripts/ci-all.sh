@@ -61,3 +61,5 @@ if [ -n "$ALL_FILES" ]; then
 fi
 
 echo "All CI tasks completed successfully!"
+
+set +e
